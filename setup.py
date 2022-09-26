@@ -7,7 +7,7 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     entry_points={
-        'console_scripts': ['RayDistributed=raydistributed.scripts.ray_distributed:main']
+        'console_scripts': ['RayDistributed=raydistributed.scripts.ray_distributed:main', "raysync=raydistributed.scripts.raysync:main"]
     },
     install_requires=[
         'ray',
