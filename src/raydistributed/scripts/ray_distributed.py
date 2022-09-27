@@ -38,10 +38,8 @@ def main(nevents, expected_nnodes):
     print(f"Processing {nevents} events")
     to_retrieve = [algo_d_name, algo_e_name]
     scheduler = Scheduler(deps)
-    futures = []
     start = time.time()
-    for i in range(nevents):
-        futures.append(scheduler.schedule_event(EventContext(i), to_retrieve))
+    futures = scheduler.schedule_n_event(nevents, to_retrieve)
     end_scheduling = time.time()
     output = ray.get(futures)
     end = time.time()
