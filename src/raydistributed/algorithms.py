@@ -26,8 +26,8 @@ class Algorithm:
         for i in range(self._niters):
             val = (i + 1) / self._niters * 0.7854
             sum += math.tan(math.log(val))
-        e = time.time()
-        print(f"Total time for {self._name}: {(e - s) * 1000}ms")
+        # e = time.time()
+        # print(f"Total time for {self._name}: {(e - s) * 1000}ms")
         return StatusCode.OK
 
     def get_name(self):
