@@ -54,7 +54,7 @@ class AlgorithmC(Algorithm):
 
 class AlgorithmD(Algorithm):
 
-    def __init__(self, niters=1_000_000) -> None:
+    def __init__(self, niters=1_500_000) -> None:
         super().__init__("AlgorithmD", niters)
 
 
