@@ -1,14 +1,15 @@
 import math
 import time
-import ray
 from enum import Enum
-from raydistributed.datamodel import EventContext
 
 
 class StatusCode(Enum):
     OK = 0
     FAILURE = 1
 
+
+# Each subclass of Algorithm does the same thing.
+# In reality they should all be different and we could have multiple instance of the same algo with different names
 
 class Algorithm:
 
