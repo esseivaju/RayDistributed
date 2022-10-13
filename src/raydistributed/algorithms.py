@@ -1,5 +1,4 @@
 import math
-import time
 from enum import Enum
 
 
@@ -9,7 +8,7 @@ class StatusCode(Enum):
 
 
 # Each subclass of Algorithm does the same thing.
-# In reality they should all be different and we could have multiple instance of the same algo with different names
+# In a realistic scenario they should all be different and we could have multiple instance of the same algo with different names
 
 class Algorithm:
 
@@ -23,12 +22,9 @@ class Algorithm:
     def execute(self) -> StatusCode:
         sum = 0.0
         val = 0.0
-        s = time.time()
         for i in range(self._niters):
             val = (i + 1) / self._niters * 0.7854
             sum += math.tan(math.log(val))
-        # e = time.time()
-        # print(f"Total time for {self._name}: {(e - s) * 1000}ms")
         return StatusCode.OK
 
     def get_name(self):
