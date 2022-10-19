@@ -7,14 +7,16 @@ from raydistributed.scheduler import Scheduler
 
 @click.command()
 @click.option('-n', '--nevents', required=True, type=int)
-@click.option('-n', '--expected-nnodes', required=True, type=int)
+@click.option('-e', '--expected-nnodes', required=True, type=int)
 @click.option('-s', '--single-alg', is_flag=True, default=False)
-def main(nevents, expected_nnodes, single_alg):
+@click.option('-m', '--max-inflight', default=0, type=int)
+def main(nevents, expected_nnodes, single_alg, max_inflight):
     ray.init(address="auto")
     nodes = ray.nodes()
     assert(len(nodes) == expected_nnodes)
     nthreads = int(ray.nodes()[0]['Resources']['CPU'])
-    print(f"Running with {len(nodes)} nodes with {nthreads} threads each ({nthreads * len(nodes)} cores)")
+    total_workers = nthreads * len(nodes)
+    print(f"Running with {len(nodes)} nodes with {nthreads} threads each ({total_workers} cores)")
     algo_a_name = AlgorithmA().get_name()
     if not single_alg:
         algo_b_name = AlgorithmB().get_name()
@@ -48,10 +50,19 @@ def main(nevents, expected_nnodes, single_alg):
     else:
         to_retrieve = [algo_a_name]
     scheduler = Scheduler(deps)
+    if max_inflight:
+        batch_size = max_inflight
+    else:
+        batch_size = nevents
+    total_sent = 0
     start = time.time()
-    futures = scheduler.schedule_n_event(nevents, to_retrieve)
+    while total_sent < nevents:
+        if total_sent + batch_size > nevents:
+            batch_size = nevents - total_sent
+        futures = scheduler.schedule_n_event(batch_size, to_retrieve)
+        total_sent += batch_size
+        _ = ray.get(futures)
     end_scheduling = time.time()
-    _ = ray.get(futures)
     end = time.time()
     print(f"Total time to schedule: {(end_scheduling - start) * 1000.0:.2f}ms")
     print(f"Total time to process: {(end - start) * 1000.0:.2f}ms")
